@@ -13,10 +13,17 @@
                         </a>
                         <p class="m-2">{{ description }}</p>
                         <p class="m-2">{{ timeago created_at }}</p>
-                        <a href="" class="btn btn-secondary">Editar</a>
+                        <a href="/links/edit/{{ id }}" class="btn btn-secondary">Editar</a>
                         <a href="/links/delete/{{ id }}" class="btn btn-danger">Borrar</a>
 
                     </div>
+                </div>
+            </div>
+        {{ else }}
+            <div class="col-md-4 mx-auto">
+                <div class="card card-body text-center">
+                    <p>There are not links saved yet</p>
+                    <a href="/links/add">Create one!</a>
                 </div>
             </div>
         {{/each}}
