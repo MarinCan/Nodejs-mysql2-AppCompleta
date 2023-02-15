@@ -4,6 +4,10 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const { engine } = require('express-handlebars')
+const flash = require('connect-flash')
+const session = require('express-session')
+const session_mysql = require('express-mysql-session')
+const { database } = require('./keys')
 
 const indexRouter = require('./routes/index');
 const linksRouter = require('./routes/links');
@@ -24,15 +28,25 @@ app.engine('.hbs', engine({
 
 app.set('view engine', '.hbs');
 
+app.use(session({
+  secret: 'patata',
+  resave: false,
+  saveUninitialized: false,
+  store: new session_mysql(database)
+}))
+app.use(flash())
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
 // app.use(express.static(path.join(__dirname, 'public')));  // <-- SE CAMBIA ABAJO !!
 
 
 //Global variables
 app.use((req, res, next) =>{
+
+  app.locals.success = req.flash('success')
 
   next()
 
