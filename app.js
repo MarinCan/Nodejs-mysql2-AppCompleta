@@ -8,12 +8,16 @@ const flash = require('connect-flash')
 const session = require('express-session')
 const session_mysql = require('express-mysql-session')
 const { database } = require('./keys')
+const passport = require('passport')
 
 const indexRouter = require('./routes/index');
 const linksRouter = require('./routes/links');
 const authenticationRouter = require('./routes/authentication');
 
+
+// Inicializadores:
 const app = express();
+require('./lib/passport')
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -34,11 +38,14 @@ app.use(session({
   saveUninitialized: false,
   store: new session_mysql(database)
 }))
+
 app.use(flash())
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(passport.initialize())
+app.use(passport.session())
 
 // app.use(express.static(path.join(__dirname, 'public')));  // <-- SE CAMBIA ABAJO !!
 
@@ -54,7 +61,7 @@ app.use((req, res, next) =>{
 
 app.use('/', indexRouter);
 app.use('/links', linksRouter);
-app.use('/authentication', authenticationRouter);
+app.use('/', authenticationRouter);
 
 
 app.use(express.static(path.join(__dirname, 'public')));
