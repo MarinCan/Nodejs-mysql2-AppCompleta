@@ -46,4 +46,12 @@ router.get('/profile', (req, res) => {
   res.render('profile')
 })
 
+router.get('/logout', (req, res) => {
+  //hay que hacer una callback ahora para que vaya:
+  req.logOut(function(err){
+    if(err) return next(err)
+  })
+  res.redirect('/signin')
+})
+
 module.exports = router;
