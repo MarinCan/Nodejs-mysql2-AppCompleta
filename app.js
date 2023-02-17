@@ -54,6 +54,10 @@ app.use(passport.session())
 app.use((req, res, next) =>{
 
   app.locals.success = req.flash('success')
+  app.locals.message = req.flash('message')
+  
+  //variable local para almacenar los datos del usuario (al loguearse):
+  app.locals.user = req.user 
 
   next()
 
