@@ -3,8 +3,10 @@ const router = express.Router();
 
 const pool = require('../database')
 
+const { isLoggedIn } = require('../lib/auth')
+
 /* GET users listing. */
-router.get('/', async (req, res, next) => {
+router.get('/', isLoggedIn, async (req, res, next) => {
 
   //con esto podemos saber si esta conectando bien:
   // const [result] = await pool.query("SELECT 1+1")
@@ -19,11 +21,11 @@ router.get('/', async (req, res, next) => {
 });
 
 
-router.get('/add', (req, res) => {
+router.get('/add', isLoggedIn, (req, res) => {
   res.render('links/add')
 })
 
-router.post('/add', async (req, res) => {
+router.post('/add', isLoggedIn, async (req, res) => {
   console.log(req.body)
 
   const {title, url, description} = req.body
@@ -42,7 +44,7 @@ router.post('/add', async (req, res) => {
   res.redirect('/links')
 })
 
-router.get('/delete/:id', async (req, res) => {
+router.get('/delete/:id', isLoggedIn, async (req, res) => {
   // console.log(req.params.id)
   const { id } = req.params
   await pool.query('DELETE FROM links WHERE id = ?', [id])
@@ -51,7 +53,7 @@ router.get('/delete/:id', async (req, res) => {
   res.redirect('/links')
 })
 
-router.get('/edit/:id', async (req, res) => {
+router.get('/edit/:id', isLoggedIn, async (req, res) => {
   // console.log(req.params.id)
   const { id } = req.params
 
@@ -62,7 +64,7 @@ router.get('/edit/:id', async (req, res) => {
   // res.send('editado')
 })
 
-router.post('/edit/:id', async (req, res) => {
+router.post('/edit/:id', isLoggedIn, async (req, res) => {
   const { id } = req.params 
   const { title, url, description } = req.body
   const new_link = {

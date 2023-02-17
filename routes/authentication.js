@@ -1,9 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const passport = require('passport')
+const { isLoggedIn, isNotLogged } = require('../lib/auth')
+
 
 /* GET users listing. */
-router.get('/signup', (req, res, next) => {
+router.get('/signup', isNotLogged, (req, res, next) => {
   res.render('auth/signup');
 });
 
@@ -21,17 +23,17 @@ router.get('/signup', (req, res, next) => {
 // });
 
 //OTRA FORMA DE HACERLO más rápido:
-router.post('/signup', passport.authenticate('local.signup', {
+router.post('/signup', isNotLogged, passport.authenticate('local.signup', {
   successRedirect: '/profile',
   failureRedirect: '/signup',
   failureFlash: true
 }))
 
-router.get('/signin', (req, res) => {
+router.get('/signin', isNotLogged, (req, res) => {
   res.render('auth/signin')
 })
 
-router.post('/signin', (req, res, next) => {
+router.post('/signin',isNotLogged, (req, res, next) => {
   // console.log(req.body)
   // res.send('Login correcto')
   passport.authenticate('local.signin', {
@@ -41,12 +43,16 @@ router.post('/signin', (req, res, next) => {
   })(req, res, next)
 })
 
-router.get('/profile', (req, res) => {
+
+// primero pasará por el middleware isLoggedIn que hemos creado. Si no lo está, no pasará
+
+router.get('/profile', isLoggedIn, (req, res) => {
   // res.send('Personal profile')
   res.render('profile')
 })
 
-router.get('/logout', (req, res) => {
+
+router.get('/logout', isLoggedIn, (req, res) => {
   //hay que hacer una callback ahora para que vaya:
   req.logOut(function(err){
     if(err) return next(err)
