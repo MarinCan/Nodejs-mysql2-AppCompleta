@@ -11,7 +11,7 @@ router.get('/', isLoggedIn, async (req, res, next) => {
   //con esto podemos saber si esta conectando bien:
   // const [result] = await pool.query("SELECT 1+1")
 
-  const [ links ] = await pool.query("SELECT * FROM links")
+  const [ links ] = await pool.query("SELECT * FROM links WHERE user_id = ?", [req.user.id])
 
   console.log(links)
   // res.send('Lista de links here!')
@@ -32,7 +32,8 @@ router.post('/add', isLoggedIn, async (req, res) => {
   const new_link = {
     title,
     url,
-    description
+    description,
+    user_id: req.user.id
   }
 
   // console.log(new_link)
